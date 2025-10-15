@@ -1,0 +1,50 @@
+global:
+  scrape_interval: 5s
+
+scrape_configs:
+  - job_name: "Windows Servers"
+    scrape_interval: 5s
+    static_configs:
+    - targets: ['192.168.88.253:9182']
+      labels:
+        instance: 'ws-17-rnd'
+  
+  - job_name: "MySQL"
+    scrape_interval: 5s
+    metrics_path: /probe
+    static_configs:
+      - targets:
+          # All mysql hostnames or unix sockets to monitor.
+        - db:3306
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        # The mysqld_exporter host:port
+        replacement: 192.168.88.253:9104
+  
+  - job_name: "blackbox"
+    metrics_path: /probe
+    params:
+      module: [http_2xx]  # Look for a HTTP 200 response.
+    basic_auth:
+      username: user1
+      password_file: /etc/prometheus/password.txt
+    static_configs:
+      - targets:
+        - http://nginx    # Target to probe with http.
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 192.168.88.253:9115  # The blackbox exporter's real hostname:port.
+
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets:
+      - 'alertmanager:9093'

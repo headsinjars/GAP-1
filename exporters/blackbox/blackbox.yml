@@ -1,0 +1,12 @@
+modules:
+  http_2xx:
+    prober: http
+    http:
+      ip_protocol_fallback: true
+      follow_redirects: true
+      enable_http2: true
+    tcp:
+      ip_protocol_fallback: true
+    icmp:
+      ip_protocol_fallback: true
+      ttl: 64
