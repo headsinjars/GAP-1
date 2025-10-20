@@ -101,6 +101,46 @@ basic_auth_users:
 
 В каталоге screenshots проекта приведены примеры скриншотов работающей системы.
 
+=== ДЗ №2 ===
+
+1. Добавлен сервис для установки долгосрочного хранилища метрик - VictoriaMetrics
+
+victoriametrics:
+    image: victoriametrics/victoria-metrics:v1.127.0
+    container_name: victoriametrics
+    volumes:
+      - ./victoriametrics/data:/victoria-metrics-data
+    ports:
+      - '8428:8428'
+    command: 
+      - '--retentionPeriod=2w'
+    depends_on:
+      - prometheus
+
+2. Установлен период хранения метрик - 2 недели:
+
+command: 
+      - '--retentionPeriod=2w'
+
+3. В файле конфигурации Prometheus добавлен job для чтения метрик из хранилища:
+
+  - job_name: "victoriametrics"
+    static_configs:
+      - targets: ['victoriametrics:8428']
+
+4. В файле конфигурации Prometheus добавлена интеграция с хранилищем VictoriaMetrics:
+
+remote_write:
+  - url: http://victoriametrics:8428/api/v1/write
+
+5. В файле конфигурации Prometheus в секции global добавлен label "site: prod" для записи в хранилище VictoriaMetrics:
+
+global:
+  scrape_interval: 5s
+  external_labels:
+    site: prod
+
+
 Автор и лицензия
 Автор: headsinjars
 Проект распространяется под лицензией MIT.

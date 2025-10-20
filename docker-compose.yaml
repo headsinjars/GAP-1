@@ -124,6 +124,19 @@ services:
     networks:
       - default
 
+  victoriametrics:
+    image: victoriametrics/victoria-metrics:v1.127.0
+    container_name: victoriametrics
+    volumes:
+      - ./victoriametrics/data:/victoria-metrics-data
+    ports:
+      - '8428:8428'
+    command: 
+      - '--retentionPeriod=2w'
+    depends_on:
+      - prometheus
+    
+
 networks:
   default:
     ipam:
