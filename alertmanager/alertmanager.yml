@@ -1,14 +1,34 @@
 global:
   resolve_timeout: 5m
+  smtp_from: monitoring@mycomp.ru
+  smtp_smarthost: mail.mycomp.ru:25
+  smtp_auth_username: monitoring
+  smtp_auth_password_file: passwd.txt
+  telegram_api_url: "https://api.telegram.org"
 
 route:
+  group_by: ['alertname', 'service', 'severity']
   receiver: 'mail'
 
+  routes:
+    - matchers:
+        - severity=~"critical|disaster"
+      receiver: telegram-oper-group1
+      
+      routes:
+        - matchers:
+            - severity="warning"
+          receiver: telegram-oper-group2
 receivers:
-- name: 'mail'
-  email_configs:
-  - to: 'youremail@example.com'
-    from: 'alertmanager@example.com'
-    smarthost: 'smtp.example.com:587'
-    auth_username: 'smtp_user'
-    auth_password: 'smtp_password'
+  - name: 'mail'
+    email_configs:
+    - to: 'all_alerts@mycomp.ru'
+  - name: 'telegram-oper-group1'
+    telegram_configs:
+      - bot_token_file: bot_token_file.txt
+        chat_id: -83980287492308743
+  - name: 'telegram-oper-group2'
+    telegram_configs:
+      - bot_token_file: bot_token_file.txt
+        chat_id: -8398028749233433
+

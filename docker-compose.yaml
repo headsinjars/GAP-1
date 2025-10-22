@@ -5,12 +5,13 @@ services:
     user: "1000:1000"
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/rules.yml:/etc/prometheus/rules.yml
       - ./prometheus/data:/prometheus/data
       - ./password.txt:/etc/prometheus/password.txt:ro
     container_name: prometheus
     hostname: prometheus
     command:
-      - --config.file=/etc/prometheus/prometheus.yml
+      - '--config.file=/etc/prometheus/prometheus.yml'
     ports:
       - 9090:9090
     restart: always

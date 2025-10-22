@@ -141,6 +141,22 @@ global:
     site: prod
 
 
+### ДЗ №3 ###
+
+1. В папке alertmanager добавлен файл конфигурации alertmanager.yml
+Настроены ресиверы, маршруты в зависимости от значения severity (отправка в телеграм в разные чаты)
+
+2. В папке prometheus добавлен файл с правилами алертинга и установкой меток severity
+3. В конфиге prometheus.yml добавлена ссылка на файл с правилами:
+```
+rule_files:
+  - "rules.yml"
+```
+4. docker-compose.yam - добавлен том для сервиса alertmanager с файлом конфигурации для alertmanager'а
+```
+    volumes:
+      - ./alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+```
 Автор и лицензия
 Автор: headsinjars
 Проект распространяется под лицензией MIT.

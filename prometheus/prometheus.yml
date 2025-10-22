@@ -3,6 +3,9 @@ global:
   external_labels:
     site: prod
 
+rule_files:
+  - "rules.yml"
+
 remote_write:
   - url: http://victoriametrics:8428/api/v1/write
 
