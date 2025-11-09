@@ -16,7 +16,16 @@ scrape_configs:
     - targets: ['192.168.88.253:9182']
       labels:
         instance: 'ws-17-rnd'
-  
+
+  - job_name: "Node exporter"
+    static_configs:
+    - targets: ['192.168.88.11:9100']
+      labels:
+        instance: 'zabbix-srv'
+    - targets: ['192.168.88.12:9100']
+      labels:
+        instance: 'docker-srv'
+
   - job_name: "MySQL"
     scrape_interval: 5s
     metrics_path: /probe
